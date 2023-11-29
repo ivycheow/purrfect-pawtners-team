@@ -72,7 +72,7 @@ public class Pet {
     private String training;
 
     @NotBlank(message = "Pet temperament cannot be blank.")
-    @Size(min = 1, max = 50, message = "Pet temperament must be between 1 to 50 characters.")
+    @Size(min = 1, max = 150, message = "Pet temperament must be between 1 to 150 characters.")
     private String temperament;
 
     @NotBlank(message = "Pet image path cannot be blank.")
