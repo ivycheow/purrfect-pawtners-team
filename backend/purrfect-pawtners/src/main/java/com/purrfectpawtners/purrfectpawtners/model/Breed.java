@@ -27,5 +27,5 @@ public class Breed {
 
     @NotNull(message = "Pet type must either be Cats or Dogs.")
     @Enumerated(EnumType.STRING)
-    private Pet.Type type;
+    private Breed.Type type;
 }

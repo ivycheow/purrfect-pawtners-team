@@ -14,105 +14,41 @@ document.addEventListener("DOMContentLoaded", function () {
         // Enable or disable the breed dropdown based on the selected option
         if (selectedOption === 'Cats' || selectedOption === 'Dogs') {
           pawtnerBreedDropdown.disabled = false;
+          fetchBreeds(selectedOption);
         } else {
           pawtnerBreedDropdown.disabled = true;
         }
 
         // Clear and populate the breed dropdown based on the selected option
-        populateBreedDropdown(selectedOption);
+        // populateBreedDropdown(selectedOption);
       });
     }
 
     // Function to populate the breed dropdown based on the selected pawtnerType
-    function populateBreedDropdown(selectedOption) {
-      // Array of breeds for Cats and Dogs (you can customize this based on your data)
-      var catBreeds = ["Bengal",
-      "British Shorthair",
-      "Maine Coon",
-      "Munchkin",
-      "Persian",
-      "Ragdoll",
-      "Russian Blue",
-      "Siamese",
-      "Siberian",
-      "Singapura"];
-      var dogBreeds = ["Affenpinscher",
-      "Australian Silky Terrier",
-      "Australian Terrier",
-      "Beagle",
-      "Bichon Frise",
-      "Bohemian Terrier",
-      "Bolognese",
-      "Brussels Griffon (Griffon Bruxaellois)",
-      "Bichon Havanese",
-      "Border Terrier",
-      "Cairn Terrier",
-      "Cavalier King Charles Spaniel",
-      "Chihuahua",
-      "Chinese Crested Dog",
-      "Chinese Imperial Chin",
-      "Chinese Temple Dog (Classic and Miniature)",
-      "Coton de tulear",
-      "Czech Terrier",
-      "Dachshund (Light and Miniature)",
-      "Dandie Dinmont Terrier",
-      "English Toy Spaniel",
-      "Griffon Belge",
-      "German Hunting Terrier",
-      "German Shepherd",
-      "Golden Retriever",
-      "Griffon Brabancon",
-      "Hairless Dog",
-      "Italian Greyhound",
-      "Jack Russell Terrier",
-      "Japanese Spaniel (Chin)",
-      "Japanese Spitz",
-      "Lhasa Apso",
-      "Little Lion Dog",
-      "Lakeland Terrier",
-      "Maltese",
-      "Manchester Terrier",
-      "Miniature Pinscher",
-      "Miniature Schnauzer",
-      "Norfolk Terrier",
-      "Norwich Terrier",
-      "Papillon",
-      "Pekinese",
-      "Pomeranian",
-      "Poodle",
-      "Pug",
-      "Poodle (Miniature)",
-      "Schipperkee",
-      "Scottish Terrier",
-      "Sealyham Terrier",
-      "Shetland Sheep Dog",
-      "Shih Tzu",
-      "Silky Terrier",
-      "Small Continental Spaniel",
-      "Small English Terrier",
-      "Small Spitz",
-      "Smooth Fox Terrier",
-      "Toy Fox Terrier",
-      "Toy Terrier",
-      "Tibetan Spaniel",
-      "Volpino Italiano",
-      "West Highland Terrier",
-      "Wire-Haired Fox Terrier",
-      "Welsh Terrier",
-      "Yorkshire Terrier",];
+    function fetchBreeds(selectedOption) {
+      var breedUrl = "http://localhost:8080/breed/type/" + selectedOption;
+      pawtnerBreedDropdown.innerHTML = '<option selected>Loading...</option>';
 
-      // Clear existing options
-      pawtnerBreedDropdown.innerHTML = '<option selected>Choose...</option>';
-
-      // Populate options based on the selected pawtnerType
-      var breeds = selectedOption === 'Cats' ? catBreeds : selectedOption === 'Dogs' ? dogBreeds : [];
-      breeds.forEach(function (breed) {
-        var option = document.createElement('option');
-        option.value = breed;
-        option.text = breed;
-        pawtnerBreedDropdown.appendChild(option);
-      });
+      fetch(breedUrl).then(response => response.json()).then(data => {
+        populateBreedDropdown(data);
+      }).catch(error => {
+        console.error('Error fetching breeds:', error);
+        pawtnerBreedDropdown.innerHTML = '<option selected>Error loading breeds</option>';
+      })
     };
+
+    function populateBreedDropdown(breeds){
+      breeds.sort((a, b) => a.name.localeCompare(b.name));
+      
+      pawtnerBreedDropdown.innerHTML = '<option selected>Choose...</option>';
+      breeds.forEach(function(breed){
+        var option = document.createElement('option');
+        option.value = breed.name;
+        option.text = breed.name;
+        pawtnerBreedDropdown.appendChild(option);
+        console.log(option);
+      })
+    }
 
   // create-pet AgeYear
   const ageYearDropdown = document.getElementById("pawtnerAgeYear");
