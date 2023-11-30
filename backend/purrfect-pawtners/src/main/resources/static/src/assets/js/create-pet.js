@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to populate the breed dropdown based on the selected pawtnerType
     function fetchBreeds(selectedOption) {
-      var breedUrl = "http://localhost:8080/breed/type/" + selectedOption;
+      var breedUrl = "/breed/type/" + selectedOption;
       pawtnerBreedDropdown.innerHTML = '<option selected>Loading...</option>';
 
       fetch(breedUrl).then(response => response.json()).then(data => {
