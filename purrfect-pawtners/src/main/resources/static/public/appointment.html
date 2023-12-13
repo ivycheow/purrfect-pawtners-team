@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Volunteer</title>
+    <title>Adopters Sign Up</title>
 
     <!--Website Icon-->
     <link href="favicon-32x32.png" rel="icon" />
@@ -55,11 +55,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link px-3" href="index.html">Home</a>
+            <a class="nav-link px-3" href="../index.html">Home</a>
             <a class="nav-link px-3" href="about.html">About Us</a>
             <a class="nav-link px-3" href="adoption.html">Adoption</a>
             <a class="nav-link px-3" href="volunteer.html">Volunteer</a>
-            <a class="nav-link px-3" href="faq.html">FAQ</a>
+            <!-- <a class="nav-link px-3" href="faq.html">FAQ</a> -->
           </div>
         </div>
       </div>
@@ -68,14 +68,12 @@
     <!--Landing Page Image-->
     <div class="landingpage-img-container">
       <img
-        src="images/volunteer-2.jpg"
-        class="img-fluid landingpage-img volunteer-img"
-        alt="Cat and dog on grass"
+        src="images/adoption-2.jpg"
+        class="img-fluid landingpage-img"
+        alt="man hugging a dog"
       />
-      <div class="landingpage-content-volunteer">
-        <div class="volunteer-signup-tagline">
-          Volunteer with a Wag:<br />Unleash Fun, Share Love
-        </div>
+      <div class="landingpage-tagline">
+        Furbaby Love:<br />Your Best Friend Awaits
       </div>
     </div>
 
@@ -89,15 +87,15 @@
                 class="card-header"
                 style="background-color: #f3deba; color: #000"
               >
-                <h4 class="mb-0">Volunteer Sign Up</h4>
+                <h4 class="mb-0">Potential Adopters Sign-Up Form</h4>
               </div>
               <div class="card-body">
                 <form action="submit_volunteer.php" method="POST">
                   <!-- Section 1: Volunteer Details -->
-                  <h5>Volunteer Details</h5>
+                  <h5>Personal Details</h5>
                   <div class="mb-3">
                     <label for="volunteerName" class="form-label"
-                      >Full Name</label
+                      >Name</label
                     >
                     <input
                       type="text"
@@ -154,41 +152,14 @@
                     />
                   </div>
 
-                  <!-- Section 2: Emergency Contact Details -->
-                  <h5 class="mt-4">Emergency Contact Details</h5>
-                  <div class="mb-3">
-                    <label for="relationship" class="form-label"
-                      >Relationship</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="relationship"
-                      name="relationship"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="emergencyName" class="form-label">Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="emergencyName"
-                      name="emergencyName"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="emergencyPhone" class="form-label"
-                      >Contact Number</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="emergencyPhone"
-                      name="emergencyPhone"
-                      required
-                    />
+                  <div class="form-group mb-3">
+                    <label for="propertyType">Property Type</label>
+                    <select id="propertyType" class="form-control">
+                      <option selected>Choose...</option>
+                      <option>Public(HDB)</option>
+                      <option>Private</option>
+                      <option>Public-Private Hybrid (Executive Condomiunim)</option>
+                    </select>
                   </div>
 
                   <button
