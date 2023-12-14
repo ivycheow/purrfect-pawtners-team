@@ -1,10 +1,22 @@
-function showModal(productId) {
-    // Use the product ID to open the correct modal
-    const modalId = `#exampleModal${productId}`;
-    $(modalId).modal('show');
-  } 
-
 var data = []
+
+function getPetIdByName(petName){
+  const apiUrl = `/pets/?name=${petName}`;
+
+  return fetch(apiUrl)
+  .then(response => {
+    if(!response.ok){
+      throw new Error("Failed to fetch petId");
+    }
+    return response.json();
+  })
+  .then(data => {
+    return data.id;
+  })
+  .catch(error => {
+    console.error("Error fetching petId: ", error)
+  });
+}
 
 // creates a class that controls the listing of products
 class Controller{
@@ -96,6 +108,8 @@ class Controller{
 
         // (B) 
         for (let index = 0; index < data.length; index++) {
+            const petName = data[index].name;
+
             let ageInfo = data[index].ageYear > 0 ? `${data[index].ageYear} years` : '';
             ageInfo += data[index].ageMonths > 0 ? ` ${data[index].ageMonths} months` : '';
 
@@ -103,53 +117,31 @@ class Controller{
             listItem.className = `col pet-item`;
             listItem.innerHTML = `
             <div class="card shadow-sm adoption-card filterDiv ${data[index].type}" 
-            data-type="${data[index].type}" 
-            data-gender="${data[index].gender}" 
-            data-hdbapproved="${data[index].isApproved}">
+              data-type="${data[index].type}" 
+              data-gender="${data[index].gender}" 
+              data-hdbapproved="${data[index].isApproved}">
                     <img class="bd-placeholder-img card-img-top album-card-img" width="100%" height="225" src="${data[index].imagePath}"/>
                     <div class="card-body album-card-body">
                         <h2>${data[index].name}</h2>
                         <p>${ageInfo} old // ${data[index].gender}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-primary album-card-button" data-bs-toggle="modal" data-bs-target="#exampleModal${data[index].id}" onclick="showModal(${data[index].id})">
-                            Find Out More</button>
-                            <div class="modal fade" id="exampleModal${data[index].id}" tabindex="-1" aria-labelledby="exampleModalLabel${data[index].id}" aria-hidden="true">
-                            <div class="modal-dialog">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h1 class="modal-title fs-7" id="staticBackdropLabel${data[index].id}">Meet ${data[index].name}!</h1>
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                  <div class="modal-body-image text-center">
-                                    <img src="${data[index].imagePath}" class="img-thumbnail mx-auto d-block modal-list-img" alt="">
-                                  </div>
-                                  <ul class="modal-list">
-                                  <p class="modal-list-bio"><i>"${data[index].temperament}"</i></p>  
-                                  <li class="modal-list-items"><strong>Name: </strong>${data[index].name}</li>
-                                    <li class="modal-list-items"><strong>Age: </strong>${ageInfo} old</li>
-                                    <li class="modal-list-items"><strong>Gender: </strong>${data[index].gender}</li>
-                                    <li class="modal-list-items"><strong>Breed: </strong>${data[index].breed.name}</li>
-                                    <li class="modal-list-items"><strong>Color: </strong>${data[index].color}</li>
-                                    <li class="modal-list-items"><strong>NParks Animal & Veterinary Service Licensed: </strong>${data[index].isLicensed ? 'Yes' : 'No'}</li>
-                                    <li class="modal-list-items"><strong>HDB-Approved: </strong>${data[index].isApproved ? 'Yes' : 'No'}</li>
-                                    <li class="modal-list-items"><strong>Spaying/Neutering: </strong>${data[index].isNeutered ? 'Yes' : 'No'}</li>
-                                    <li class="modal-list-items"><strong>Training: </strong>${data[index].training}</li>
-                                  </ul>
-                                  <button type="button" class="btn btn-primary album-card-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                    <a href="appointment.html" class="modal-button-appointment" target="_blank">Book Your Appointment Now!</a>
-                                  </button>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary modal-button" data-bs-dismiss="modal">Close</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                            <button type="button" class="btn btn-primary album-card-button">
+                              Update
+                            </button>
+
+                            <button type="button" class="btn btn-danger" id="delete-button" onClick="handleDeleteButtonClick('${petName}')">
+                              Delete
+                            </button>
                         </div>
                     </div>
-                </div>
-            `
+            </div>
+            `;
+            
+            // const deleteButton = listItem.querySelector(".btn-danger");
+            //   deleteButton.addEventListener("click", () => {
+            //       this.handleDeleteButtonClick(petName);
+            //   });
+            
             unorderedList.appendChild(listItem);
         }
 
@@ -228,3 +220,36 @@ async function fetchData() {
 }
 
 fetchData();
+
+function handleDeleteButtonClick(petName) {
+  // Use petName as needed
+  getPetIdByName(petName)
+      .then(petId => {
+        const confirmDelete = confirm("Are you sure you want to delete this pet?")
+
+        if(confirmDelete){
+            const apiDeleteUrl = `/pets/delete/${petId}`;
+
+            fetch(apiDeleteUrl, {
+                method: "DELETE"
+            })
+            
+            .then(response => {
+                if(response.ok) {
+                    alert("Pet deleted successfully");
+                    window.location.reload();
+                } else{
+                    alert("Failed to delete pet. Please try again.")
+                }
+            })
+            .catch(error => {
+                console.error("Erro deleting pet:", error);
+                alert("An error occured while deleting the pet. Please try again.")
+            });
+        }
+      })
+      .catch(error => {
+          console.error("Error: ", error);
+          alert("An error occurred while fetching the pet. Please try again.");
+      });
+};

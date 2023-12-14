@@ -35,7 +35,7 @@ public class PetService {
         return petRepository.findById(id);
     }
 
-    public List<Pet> findByPetName(String name){
+    public Pet findByPetName(String name){
         return petRepository.findByName(name);
     }
 

@@ -77,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
   fieldsToValidate.forEach(function (fieldId) {
     const inputField = document.getElementById(fieldId);
     inputField.addEventListener("input", function () {
-      // Only allow letters and whitespace
       this.value = this.value.replace(/[^A-Za-z\s\'!.-;]/g, "");
     });
   });
