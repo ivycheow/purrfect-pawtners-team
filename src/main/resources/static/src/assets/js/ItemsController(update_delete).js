@@ -130,7 +130,7 @@ class Controller {
                               Update
                             </button>
 
-                            <button type="button" class="btn btn-danger" id="delete-button" data-bs-dismiss="modal" aria-label="Close" data-bs-toggle="modal" data-bs-target="#exampleModal${data[index].id}" onClick="handleDeleteButtonClick('${petName}')">
+                            <button type="button" class="btn btn-danger" id="delete-button" onClick="handleDeleteButtonClick('${petName}')">
                               Delete
                             </button>
                           </div>
