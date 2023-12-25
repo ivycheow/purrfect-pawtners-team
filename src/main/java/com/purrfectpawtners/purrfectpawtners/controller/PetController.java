@@ -65,6 +65,14 @@ public class PetController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Pet> getPetByName(@RequestParam(required = true) String name){
+        Pet pet = petService.findByPetName(name);
+        if (pet == null){
+            throw new ResourceNotFoundException("No pet found for pet name: " + name);
+        } return new ResponseEntity<>(pet, HttpStatus.OK);
+    }
+
     @GetMapping("/gender/{gender}")
     public ResponseEntity<List<Pet>> getPetByGender(@PathVariable("gender") Pet.Gender gender)
             throws EmptyPetListException {
