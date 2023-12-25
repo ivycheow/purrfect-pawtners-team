@@ -65,13 +65,14 @@ public class PetController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Pet> getPetByName(@RequestParam(required = true) String name){
-        Pet pet = petService.findByPetName(name);
-        if (pet == null){
-            throw new ResourceNotFoundException("No pet found for pet name: " + name);
-        } return new ResponseEntity<>(pet, HttpStatus.OK);
-    }
+    @GetMapping("/name")
+    public ResponseEntity<List<Pet>> getPetByName(@RequestParam(required = true) String name){
+        List<Pet> pets = petService.findByPetName(name);
+        if (pets.isEmpty()){
+            throw new ResourceNotFoundException("No pets found for pet name: " + name);
+        } 
+        return new ResponseEntity<>(pets, HttpStatus.OK);
+    }    
 
     @GetMapping("/gender/{gender}")
     public ResponseEntity<List<Pet>> getPetByGender(@PathVariable("gender") Pet.Gender gender)
