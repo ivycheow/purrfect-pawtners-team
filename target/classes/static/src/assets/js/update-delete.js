@@ -1,7 +1,7 @@
 var data = [];
 
 function getPetIdByName(petName) {
-  const apiUrl = `/pets/?name=${petName}`;
+  const apiUrl = `/pets/name?name=${encodeURIComponent(petName)}`;
 
   return fetch(apiUrl)
     .then((response) => {
@@ -11,7 +11,7 @@ function getPetIdByName(petName) {
       return response.json();
     })
     .then((data) => {
-      return data.id;
+      return data.length > 0 ? data[0].id : null;
     })
     .catch((error) => {
       console.error("Error fetching petId: ", error);
@@ -121,8 +121,9 @@ class Controller {
               data-type="${data[index].type}" 
               data-gender="${data[index].gender}" 
               data-hdbapproved="${data[index].isApproved}">
-                    <img class="bd-placeholder-img card-img-top album-card-img" width="100%" height="225" src="${data[index].imagePath}"/>
-                    <div class="card-body album-card-body">
+              <img class="bd-placeholder-img card-img-top album-card-img" width="100%" height="225" 
+              src="/public/uploads/${data[index].imagePath}"/>
+                      <div class="card-body album-card-body">
                         <h2>${data[index].name}</h2>
                         <p>${ageInfo} old // ${data[index].gender}</p>
                         <div class="d-flex justify-content-between align-items-center">
@@ -236,32 +237,36 @@ fetchData();
 function handleDeleteButtonClick(petName) {
   getPetIdByName(petName)
     .then((petId) => {
-      const confirmDelete = confirm(
-        "Are you sure you want to delete this pet?"
-      );
-
-      if (confirmDelete) {
-        const apiDeleteUrl = `/pets/delete/${petId}`;
-
-        fetch(apiDeleteUrl, {
-          method: "DELETE",
-        })
-          .then((response) => {
-            if (response.ok) {
-              alert("Pet deleted successfully");
-              window.location.reload();
-            } else {
-              alert("Failed to delete pet. Please try again.");
-            }
-          })
-          .catch((error) => {
-            console.error("Erro deleting pet:", error);
-            alert("An error occured while deleting the pet. Please try again.");
-          });
+      if (!petId) {
+        alert("Pet not found.");
+        return;
       }
+
+      const confirmDelete = confirm("Are you sure you want to delete this pet?");
+      if (!confirmDelete) {
+        return; // Exit if user cancels the delete action.
+      }
+
+      const apiDeleteUrl = `/pets/delete/${petId}`;
+      fetch(apiDeleteUrl, {
+        method: "DELETE",
+      })
+      .then((response) => {
+        if (response.ok) {
+          alert("Pet deleted successfully");
+          window.location.reload();
+        } else {
+          alert("Failed to delete pet. Please try again.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting pet:", error);
+        alert("An error occurred while deleting the pet. Please try again.");
+      });
     })
     .catch((error) => {
       console.error("Error: ", error);
       alert("An error occurred while fetching the pet. Please try again.");
     });
 }
+

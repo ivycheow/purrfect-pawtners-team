@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
       option.value = breed.id;
       option.text = breed.name;
       pawtnerBreedDropdown.appendChild(option);
-      console.log(option);
     });
   }
 
