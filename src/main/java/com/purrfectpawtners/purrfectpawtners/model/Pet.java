@@ -28,6 +28,7 @@ public class Pet {
 
     @NotBlank(message = "Pet name cannot be blank.")
     @Size(min = 1, max = 15, message = "Pet name must be between 1 to 15 characters.")
+    @Column(unique = true)
     private String name;
 
     @Column(name = "ageYear")

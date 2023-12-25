@@ -3,6 +3,7 @@ package com.purrfectpawtners.purrfectpawtners.controller;
 import com.purrfectpawtners.purrfectpawtners.exception.EmptyPetListException;
 import com.purrfectpawtners.purrfectpawtners.exception.ResourceNotFoundException;
 import com.purrfectpawtners.purrfectpawtners.model.Pet;
+import com.purrfectpawtners.purrfectpawtners.service.BreedService;
 import com.purrfectpawtners.purrfectpawtners.service.PetService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,8 @@ public class PetController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Pet>> getAllPets(@RequestParam(required = false) String name) throws EmptyPetListException {
-        List<Pet> result;
-        if(name == null){
-            result = petService.getAllPets();
-        } else{
-            result = petService.findByPetName(name);
-        }
-
+    public ResponseEntity<List<Pet>> getAllPets() throws EmptyPetListException {
+        List<Pet> result = petService.getAllPets();
         if(result.isEmpty()){
             throw new EmptyPetListException("No pet(s) available.");
         } return ResponseEntity.ok(result);
@@ -45,6 +40,14 @@ public class PetController {
     public ResponseEntity<Pet> getPetById(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         Pet result = petService.findPetById(id).orElseThrow(() -> new ResourceNotFoundException("No pet found under id: " + id));
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<Pet> getPetByName(@RequestParam(required = true) String name){
+        Pet pet = petService.findByPetName(name);
+        if (pet == null){
+            throw new ResourceNotFoundException("No pet found for pet name: " + name);
+        } return new ResponseEntity<>(pet, HttpStatus.OK);
     }
 
     @GetMapping("/gender/{gender}")

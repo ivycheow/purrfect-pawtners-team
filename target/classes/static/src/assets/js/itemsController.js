@@ -221,7 +221,7 @@ productsController = new Controller(data.length, data);
 // productsController.loadDataFromLocalStorage();
 
 async function fetchData() {
-    let response = await fetch("http://localhost:8080/pets/all");
+    let response = await fetch("/pets/all");
     let data = await response.json();
     // console.log(data);
     productsController.displayCart(data);

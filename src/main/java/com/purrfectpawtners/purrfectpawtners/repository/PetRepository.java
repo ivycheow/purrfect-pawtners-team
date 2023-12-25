@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Integer> {
-    public List<Pet> findByName(String name);
+    public Pet findByName(String name);
 
     public List<Pet> findByType(Pet.Type type);
 
