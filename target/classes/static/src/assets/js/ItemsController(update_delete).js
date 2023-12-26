@@ -133,28 +133,6 @@ class Controller {
                             <button type="button" class="btn btn-danger" id="delete-button" onClick="handleDeleteButtonClick('${petName}')">
                               Delete
                             </button>
-
-                            <div class="modal fade" id="deletePetModal" tabindex="-1" role="dialog" aria-labelledby="deletePetModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="deletePetModalLabel">Confirm Delete</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  Are you sure you want to delete this pet?
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                  <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-
                           </div>
                         </div>
               </div>
@@ -257,48 +235,33 @@ fetchData();
 
 function handleDeleteButtonClick(petName) {
   getPetIdByName(petName)
-      .then(petId => {
-          // Dynamically generate the unique modal ID
-          const modalId = `deletePetModal_${petId}`;
-          
-          // Trigger the modal using Bootstrap's modal methods
-          const modalElement = document.getElementById(modalId);
+    .then((petId) => {
+      const confirmDelete = confirm(
+        "Are you sure you want to delete this pet?"
+      );
 
-          // Check if the modal element is found
-          if (modalElement) {
-              modalElement.classList.add('show');
-              modalElement.style.display = 'block';
+      if (confirmDelete) {
+        const apiDeleteUrl = `/pets/delete/${petId}`;
 
-              // Add an event listener to the parent modal for delegation
-              modalElement.addEventListener("click", function(event) {
-                  if (event.target.id === "confirmDeleteButton") {
-                      // Handle the delete action here
-                      const apiDeleteUrl = `/pets/delete/${petId}`;
-
-                      fetch(apiDeleteUrl, {
-                          method: "DELETE"
-                      })
-                      .then(response => {
-                          if(response.ok) {
-                              alert("Pet deleted successfully");
-                              window.location.reload();
-                          } else{
-                              alert("Failed to delete pet. Please try again.")
-                          }
-                      })
-                      .catch(error => {
-                          console.error("Error deleting pet:", error);
-                          alert("An error occurred while deleting the pet. Please try again.")
-                      });
-                  }
-              });
-          } else {
-              console.error("Modal element not found");
-          }
-      })
-      .catch(error => {
-          console.error("Error: ", error);
-          alert("An error occurred while fetching the pet. Please try again.");
-      });
-};
-
+        fetch(apiDeleteUrl, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert("Pet deleted successfully");
+              window.location.reload();
+            } else {
+              alert("Failed to delete pet. Please try again.");
+            }
+          })
+          .catch((error) => {
+            console.error("Erro deleting pet:", error);
+            alert("An error occured while deleting the pet. Please try again.");
+          });
+      }
+    })
+    .catch((error) => {
+      console.error("Error: ", error);
+      alert("An error occurred while fetching the pet. Please try again.");
+    });
+}

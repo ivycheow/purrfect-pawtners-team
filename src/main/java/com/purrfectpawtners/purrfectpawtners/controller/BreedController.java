@@ -1,7 +1,6 @@
 package com.purrfectpawtners.purrfectpawtners.controller;
 
 import com.purrfectpawtners.purrfectpawtners.model.Breed;
-import com.purrfectpawtners.purrfectpawtners.model.Pet;
 import com.purrfectpawtners.purrfectpawtners.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
