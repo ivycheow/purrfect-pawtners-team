@@ -37,11 +37,28 @@ class Controller {
     if (storageItems) {
       const products = JSON.parse(storageItems);
       this.displayCart(products);
+      this.setupFilterListeneers();
+    } else {
+      this.fetchAndDisplayAllPets();
+    }
+  }
+
+  async fetchAndDisplayAllPets(){
+    try{
+      let response = await fetch("/pets/all");
+      let data = await response.json();
+      console.log(data);
+      this.products = data;
+      this.displayCart(data);
+      this.setupFilterListeneers();
+    } catch(error){
+      console.error("Error fetching data from API: ", error);
     }
   }
 
   displayCart(data) {
     const unorderedList = document.querySelector(".album-container");
+    unorderedList.innerHTML = "";
     if (!unorderedList) {
       return;
     }
@@ -212,6 +229,47 @@ class Controller {
     this.products.push(product);
     localStorage.setItem("productList", JSON.stringify(this.products));
   }
+
+  setupFilterListeneers() {
+    const typeFilter = document.getElementById("pawtnerTypeFilter");
+    const genderFilter = document.getElementById("pawtnerGenderFilter");
+    const hdbApprovedFilter = document.getElementById("pawtnerHDBApprovedFilter");
+    const clearFilterButton = document.querySelector(".clear-filter-button");
+
+    clearFilterButton.addEventListener("click", function () {
+      productsController.fetchAndDisplayAllPets();
+      typeFilter.value = "All";
+      genderFilter.value = "All";
+      hdbApprovedFilter.value = "All";
+    });
+
+    const callApi = () => {
+      const filters = [
+        { name: "type", value: typeFilter.value },
+        { name: "gender", value: genderFilter.value },
+        { name: "isApproved", value: hdbApprovedFilter.value === "Yes" ? true : hdbApprovedFilter.value === "No" ? false : null },
+      ];
+
+      const validFilters = filters.filter((filter) => filter.value !== "All" && filter.value !== null);
+
+      const apiUrl = "/pets/filter?" + validFilters
+        .map((filter) => `${filter.name}=${filter.value}`)
+        .join("&");
+  
+      fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        this.displayCart(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    }
+
+      typeFilter.addEventListener("change", callApi);
+      genderFilter.addEventListener("change", callApi);
+      hdbApprovedFilter.addEventListener("change", callApi);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -224,14 +282,5 @@ document.addEventListener("DOMContentLoaded", function () {
   var data = [];
 
   productsController = new Controller(data.length, data);
-  // productsController.loadDataFromLocalStorage();
-
-  fetchData();
+  productsController.fetchAndDisplayAllPets();
 });
-
-async function fetchData() {
-  let response = await fetch("http://localhost:8080/pets/all");
-  let data = await response.json();
-  console.log(data);
-  productsController.displayCart(data);
-}

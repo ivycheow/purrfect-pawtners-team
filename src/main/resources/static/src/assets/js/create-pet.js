@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fieldsToValidate.forEach(function (fieldId) {
     const inputField = document.getElementById(fieldId);
     inputField.addEventListener("input", function () {
-      this.value = this.value.replace(/[^A-Za-z\s\'!.-;]/g, "");
+      this.value = this.value.replace(/[^A-Za-z\s\'!.;-]/g, "");
     });
   });
 });
@@ -193,11 +193,6 @@ newProductForm.addEventListener("submit", async (event) => {
   var toastEl = document.querySelector(".toast");
   var toast = new bootstrap.Toast(toastEl);
   toast.show();
-
-  // // Clear the form
-  // var form = document.getElementById("createPetForm"); // Replace "yourFormId" with the actual ID of your form
-  // form.reset();
-  // console.log("Form has been reset.");
 
   // Clear the image preview
   var preview = document.getElementById("imagePreview");

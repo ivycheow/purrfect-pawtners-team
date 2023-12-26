@@ -3,10 +3,13 @@ package com.purrfectpawtners.purrfectpawtners.service;
 import com.purrfectpawtners.purrfectpawtners.model.Pet;
 import com.purrfectpawtners.purrfectpawtners.repository.BreedRepository;
 import com.purrfectpawtners.purrfectpawtners.repository.PetRepository;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class PetService {
@@ -40,12 +43,28 @@ private final PetRepository petRepository;
         return petRepository.findByGender(gender);
     }
 
-    public List<Pet> findAllApprovedPets() {
-        return petRepository.findByIsApprovedTrue();
+    public List<Pet> findByHdbApprovedStatus(boolean isApproved) {
+        return petRepository.findByIsApproved(isApproved);
     }
 
-    public List<Pet> findAllNonApprovedPets() {
-        return petRepository.findByIsApprovedFalse();
+    public List<Pet> filterPets(Pet.Type type, Pet.Gender gender, Boolean isApproved){
+        return petRepository.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if(type != null){
+                predicates.add(cb.equal(root.get("type"), type));
+            }
+
+            if(gender != null){
+                predicates.add(cb.equal(root.get("gender"), gender));
+            }
+
+            if(isApproved != null){
+                predicates.add(cb.equal(root.get("isApproved"), isApproved));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
     }
 
     public Pet createPet(Pet pet) {
@@ -56,7 +75,6 @@ private final PetRepository petRepository;
         return petRepository.save(pet);
     }
 
-        
     public Pet updatePet(Pet pet) {
         return petRepository.save(pet);
     }

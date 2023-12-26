@@ -1,7 +1,7 @@
 var data = [];
 
 function getPetIdByName(petName) {
-  const apiUrl = `/pets/?name=${petName}`;
+  const apiUrl = `/pets/name?name=${petName}`;
 
   return fetch(apiUrl)
     .then((response) => {
@@ -233,35 +233,28 @@ async function fetchData() {
 
 fetchData();
 
-function handleDeleteButtonClick(petName) {
-  getPetIdByName(petName)
-    .then((petId) => {
-      const confirmDelete = confirm(
-        "Are you sure you want to delete this pet?"
-      );
+async function handleDeleteButtonClick(petName) {
+  try{
+    const petId = await getPetIdByName(petName);
+    console.log(petId);
+    const confirmDelete = confirm("Are you sure you want to delete this pet?");
 
-      if (confirmDelete) {
-        const apiDeleteUrl = `/pets/delete/${petId}`;
+    if (confirmDelete) {
+      const apiDeleteUrl = `/pets/delete/${petId}`;
 
-        fetch(apiDeleteUrl, {
-          method: "DELETE",
-        })
-          .then((response) => {
-            if (response.ok) {
-              alert("Pet deleted successfully");
+      fetch(apiDeleteUrl, {
+        method: "DELETE",
+      })
+
+      if(response.ok){
+        alert("Pet deleted successfully");
               window.location.reload();
             } else {
               alert("Failed to delete pet. Please try again.");
-            }
-          })
-          .catch((error) => {
-            console.error("Erro deleting pet:", error);
-            alert("An error occured while deleting the pet. Please try again.");
-          });
       }
-    })
-    .catch((error) => {
-      console.error("Error: ", error);
-      alert("An error occurred while fetching the pet. Please try again.");
-    });
+    }
+  } catch (error){
+    console.error("Error: ", error);
+    alert("An error occurred while fetching the pet. Please try again.");
+  }
 }
