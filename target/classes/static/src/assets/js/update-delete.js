@@ -2,42 +2,21 @@ var data = [];
 
 function getPetIdByName(petName) {
   const apiUrl = `/pets/name?name=${encodeURIComponent(petName)}`;
-
   return fetch(apiUrl)
     .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to fetch petId");
-      }
+      if (!response.ok) throw new Error("Failed to fetch petId");
       return response.json();
     })
-    .then((data) => {
-      return data.length > 0 ? data[0].id : null;
-    })
-    .catch((error) => {
-      console.error("Error fetching petId: ", error);
-    });
+    .then((data) => data.length > 0 ? data[0].id : null)
+    .catch((error) => console.error("Error fetching petId: ", error));
 }
 
-// creates a class that controls the listing of products
 class Controller {
-  // constructor of a class is typically used for initialisation
-  // 'this' is a keyword, properties that belong to this class are declared here
-  // start the current id based on the passed in value (or default to zero)
-  // and store the passed-in param 'data' to localStorage via storeDataTolocalStorage
-
   constructor(currentId = 0, data = []) {
-    this.products = data !== null && data; // class Controller's property: products
-    this.currentId = currentId; // class Controller's property: currentId
-
+    this.products = data !== null && data;
+    this.currentId = currentId;
     this.storeDataToLocalStorage(data);
   }
-
-  // storeDataToLocalStorage() method belongs to class Controller
-  // if localStorage 'productList' doesn't exist
-  // ensure there are values in 'data' before storing the data
-  // current id is used here to determine the currentId in this instance of the object
-  // stores the param's data into the web browser's localStorage
-  // the localStorage variable is defined with the name 'productList'
 
   storeDataToLocalStorage(data) {
     if (!localStorage.getItem("productList")) {
@@ -45,7 +24,7 @@ class Controller {
       if (data.length > 0) {
         for (let index = 0; index < this.currentId; index++) {
           sampleItems.push({
-            id: index + 1, // increment the id
+            id: index + 1,
             name: data[index].name,
             ageYear: data[index].ageYear,
             ageMonths: data[index].ageMonths,
@@ -66,36 +45,8 @@ class Controller {
     }
   }
 
-  // loadDataFromLocalStorage() method belongs to class Controller
-  // loads data called 'productList' from localStorage - see helpers.js
-  // after 'productList' is loaded from localStorage to local constant 'products'
-  // pass the values from 'products' to method displayCart() to display the contents
-
-  loadDataFromLocalStorage() {
-    const storageItems = localStorage.getItem("productList");
-    if (storageItems) {
-      const products = JSON.parse(storageItems);
-      this.displayCart(products);
-    }
-  }
-
-  // displayCart() method belongs to class Controller
-  // it receives an array of Objects
-  // an instance unorderedlist is instantiated to reference classname "all-cards-container"
-
-  // (A) in the event there are NO products
-  // reset the gridTemplateColumns of class "all-cards-container"
-  // and displays feedback that there are no products at the moment
-  // and exit the function displayCart() prematurely - via return;
-
-  // (B) in the event there are products
-  // a for loop is used to iteratively populate class name "all-cards-container"
-  // with a list of items representing each product received from param 'data'
-
   displayCart(data) {
     const unorderedList = document.querySelector(".album-container");
-
-    // (A)
     if (!data.length) {
       unorderedList.style.gridTemplateColumns = "none";
       let listItem = document.createElement("li");
@@ -104,16 +55,8 @@ class Controller {
       return;
     }
 
-    // (B)
     for (let index = 0; index < data.length; index++) {
       const petName = data[index].name;
-      const modalId = `deletePetModal_${index}`; // Unique modal id
-
-      let ageInfo =
-        data[index].ageYear > 0 ? `${data[index].ageYear} years` : "";
-      ageInfo +=
-        data[index].ageMonths > 0 ? ` ${data[index].ageMonths} months` : "";
-
       let listItem = document.createElement("div");
       listItem.className = `col pet-item`;
       listItem.innerHTML = `
@@ -123,62 +66,30 @@ class Controller {
               data-hdbapproved="${data[index].isApproved}">
               <img class="bd-placeholder-img card-img-top album-card-img" width="100%" height="225" 
               src="/public/uploads/${data[index].imagePath}"/>
-                      <div class="card-body album-card-body">
-                        <h2>${data[index].name}</h2>
-                        <p>${ageInfo} old // ${data[index].gender}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" class="btn btn-primary album-card-button">
-                              Update
-                            </button>
-
-                            <button type="button" class="btn btn-danger" id="delete-button" onClick="handleDeleteButtonClick('${petName}')">
-                              Delete
-                            </button>
-                          </div>
-                        </div>
+              <div class="card-body album-card-body">
+                <h2>${data[index].name}</h2>
+                <p>${data[index].ageYear} years ${data[index].ageMonths} months // ${data[index].gender}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <button type="button" class="btn btn-primary update-button" data-petid="${data[index].id}">
+                    Update
+                  </button>
+                  <button type="button" class="btn btn-danger" onClick="handleDeleteButtonClick('${petName}')">
+                    Delete
+                  </button>
+                </div>
               </div>
-            `;
-
-      // const deleteButton = listItem.querySelector(".btn-danger");
-      //   deleteButton.addEventListener("click", () => {
-      //       this.handleDeleteButtonClick(petName);
-      //   });
-
+            </div>`;
       unorderedList.appendChild(listItem);
     }
+    handleUpdateButtonClick();
   }
 
-  // addProduct() method belongs to class Controller
-  // when called, addProduct instnatiates a constant that stores the passed-in params
-  // and pushes each new product into products property (refer to constructor)
-  // and adds each product to localStorage via its method setItem()
-
-  // (A) if 'productList' exists in localStorage, append to it and exit (return)
-  // (B) otherwise, use the products property of Controller
-
-  addProduct(
-    name,
-    ageYear,
-    ageMonths,
-    type,
-    breed,
-    imagePath,
-    gender,
-    color,
-    licensed,
-    hdbApproved,
-    spaying,
-    training,
-    temperament
-  ) {
+  addProduct(name, ageYear, ageMonths, type, breed, imagePath, gender, color, licensed, hdbApproved, spaying, training, temperament) {
     const storageItems = localStorage.getItem("productList");
-
-    // (A)
     if (storageItems) {
       const products = JSON.parse(storageItems);
-      console.log(`Testing products length ${products.length}`);
       const product = {
-        id: products.length + 1, // increment the id for each newly added product
+        id: products.length + 1,
         name: name,
         ageYear: ageYear,
         ageMonths: ageMonths,
@@ -187,9 +98,9 @@ class Controller {
         imagePath: imagePath,
         gender: gender,
         color: color,
-        isLicensed: isLicensed,
-        isApproved: isApproved,
-        isNeutered: isNeutered,
+        isLicensed: licensed,
+        isApproved: hdbApproved,
+        isNeutered: spaying,
         training: training,
         temperament: temperament,
       };
@@ -197,12 +108,9 @@ class Controller {
       localStorage.setItem("productList", JSON.stringify(products));
       return;
     }
-
-    // (B)
     const setId = !storageItems ? 1 : storageItems.length++;
-
     const product = {
-      id: setId, // this.currentId++,
+      id: setId,
       name: name,
       ageYear: ageYear,
       ageMonths: ageMonths,
@@ -211,9 +119,9 @@ class Controller {
       imagePath: imagePath,
       gender: gender,
       color: color,
-      isLicensed: isLicensed,
-      isApproved: isApproved,
-      isNeutered: isNeutered,
+      isLicensed: licensed,
+      isApproved: hdbApproved,
+      isNeutered: spaying,
       training: training,
       temperament: temperament,
     };
@@ -222,17 +130,13 @@ class Controller {
   }
 }
 
-productsController = new Controller(data.length, data);
-// productsController.loadDataFromLocalStorage();
+const productsController = new Controller(data.length, data);
 
 async function fetchData() {
-  let response = await fetch("/pets/all");
-  let data = await response.json();
-  // console.log(data);
+  const response = await fetch("/pets/all");
+  const data = await response.json();
   productsController.displayCart(data);
 }
-
-fetchData();
 
 function handleDeleteButtonClick(petName) {
   getPetIdByName(petName)
@@ -241,28 +145,22 @@ function handleDeleteButtonClick(petName) {
         alert("Pet not found.");
         return;
       }
-
       const confirmDelete = confirm("Are you sure you want to delete this pet?");
-      if (!confirmDelete) {
-        return; // Exit if user cancels the delete action.
-      }
-
+      if (!confirmDelete) return;
       const apiDeleteUrl = `/pets/delete/${petId}`;
-      fetch(apiDeleteUrl, {
-        method: "DELETE",
-      })
-      .then((response) => {
-        if (response.ok) {
-          alert("Pet deleted successfully");
-          window.location.reload();
-        } else {
-          alert("Failed to delete pet. Please try again.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error deleting pet:", error);
-        alert("An error occurred while deleting the pet. Please try again.");
-      });
+      fetch(apiDeleteUrl, { method: "DELETE" })
+        .then((response) => {
+          if (response.ok) {
+            alert("Pet deleted successfully");
+            window.location.reload();
+          } else {
+            alert("Failed to delete pet. Please try again.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting pet:", error);
+          alert("An error occurred while deleting the pet. Please try again.");
+        });
     })
     .catch((error) => {
       console.error("Error: ", error);
@@ -270,3 +168,16 @@ function handleDeleteButtonClick(petName) {
     });
 }
 
+function handleUpdateButtonClick() {
+  const updateButtons = document.querySelectorAll(".update-button");
+  updateButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const petId = this.getAttribute("data-petid");
+      window.location.href = `create-update-pet-form.html?id=${petId}`;
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetchData();
+});
