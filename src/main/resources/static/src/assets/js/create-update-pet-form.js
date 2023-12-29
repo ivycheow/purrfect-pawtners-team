@@ -23,7 +23,9 @@ function populateFormFields(pet) {
   document.getElementById("pawtnerTemperament").value = pet.temperament || "";
 
   if (pet.gender) {
-    document.querySelector(`input[name="pawtnerGender"][value="${pet.gender}"]`).checked = true;
+    document.querySelector(
+      `input[name="pawtnerGender"][value="${pet.gender}"]`
+    ).checked = true;
   }
 
   console.log("Breed Details:", pet.breed);
@@ -46,7 +48,9 @@ function populateFormFields(pet) {
 
 // Function to set radio button values
 function setBooleanField(fieldName, value) {
-  const fieldToSet = document.querySelector(`input[name="${fieldName}"][value="${value ? "Yes" : "No"}"]`);
+  const fieldToSet = document.querySelector(
+    `input[name="${fieldName}"][value="${value ? "Yes" : "No"}"]`
+  );
   if (fieldToSet) {
     fieldToSet.checked = true;
   }
@@ -86,8 +90,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (pawtnerTypeDropdown && pawtnerBreedDropdown) {
     pawtnerTypeDropdown.addEventListener("change", function () {
-      var selectedOption = pawtnerTypeDropdown.options[pawtnerTypeDropdown.selectedIndex].value;
-      pawtnerBreedDropdown.disabled = !(selectedOption === "Cats" || selectedOption === "Dogs");
+      var selectedOption =
+        pawtnerTypeDropdown.options[pawtnerTypeDropdown.selectedIndex].value;
+      pawtnerBreedDropdown.disabled = !(
+        selectedOption === "Cats" || selectedOption === "Dogs"
+      );
       if (!pawtnerBreedDropdown.disabled) {
         fetchBreeds(selectedOption);
       }
@@ -114,7 +121,12 @@ function populateDropdown(elementId, start, end) {
 }
 
 function setupTextInputValidation() {
-  const fieldsToValidate = ["pawtnerName", "pawtnerColour", "pawtnerTemperament", "pawtnerTraining"];
+  const fieldsToValidate = [
+    "pawtnerName",
+    "pawtnerColour",
+    "pawtnerTemperament",
+    "pawtnerTraining",
+  ];
   fieldsToValidate.forEach(function (fieldId) {
     const inputField = document.getElementById(fieldId);
     inputField.addEventListener("input", function () {
@@ -157,7 +169,9 @@ function previewImage() {
 }
 
 function handleInvalidFile(fileInput, preview) {
-  alert("Invalid file. Please upload a valid image file (JPG, JPEG, or PNG) with a size less than 5MB.");
+  alert(
+    "Invalid file. Please upload a valid image file (JPG, JPEG, or PNG) with a size less than 5MB."
+  );
   fileInput.value = "";
   resetPreviewImage(preview);
 }
@@ -171,18 +185,33 @@ const newProductForm = document.querySelector("#createPetForm");
 newProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   window.scrollTo(0, 0);
+
+  // Create FormData from the form
   const formData = new FormData(event.target);
+
+  // Append the image file to formData
   const fileInput = document.querySelector("#pawtnerImage").files[0];
   formData.append("pawtnerImage", fileInput);
+
+  // Append the pawtnerBreed to formData
+  const selectedBreedId = document.getElementById("pawtnerBreed").value;
+  formData.append("pawtnerBreed", selectedBreedId);
+
   const petId = document.getElementById("petId").value;
   const method = petId ? "PUT" : "POST";
   const url = petId ? `http://localhost:8080/pets/update/${petId}` : "http://localhost:8080/pets/";
+
+  console.log("FormData Contents:"); // Debugging line
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value); // Debugging line
+  }
+
   try {
     const response = await fetch(url, { method: method, body: formData });
     if (response.ok) {
       handleSuccessfulSubmission(petId, event.target);
     } else {
-      console.error("Failed to process pet.");
+      console.error("Failed to process pet. Response:", response);
     }
   } catch (error) {
     console.error("Error during fetch:", error);
@@ -206,3 +235,16 @@ var productAddedToast = document.querySelector(".toast");
 productAddedToast.addEventListener("hidden.bs.toast", function () {
   window.open("adoption.html", "_self");
 });
+
+function setRequiredForImage() {
+  const petId = document.getElementById("petId").value;
+  const imageInput = document.getElementById("pawtnerImage");
+
+  // If petId exists, it's an update, so image is not required.
+  // Otherwise, it's a new pet creation, so image is required.
+  if (petId) {
+    imageInput.removeAttribute('required');
+  } else {
+    imageInput.setAttribute('required', '');
+  }
+}

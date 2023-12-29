@@ -66,13 +66,13 @@ public class PetController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<List<Pet>> getPetByName(@RequestParam(required = true) String name){
+    public ResponseEntity<List<Pet>> getPetByName(@RequestParam(required = true) String name) {
         List<Pet> pets = petService.findByPetName(name);
-        if (pets.isEmpty()){
+        if (pets.isEmpty()) {
             throw new ResourceNotFoundException("No pets found for pet name: " + name);
-        } 
+        }
         return new ResponseEntity<>(pets, HttpStatus.OK);
-    }    
+    }
 
     @GetMapping("/gender/{gender}")
     public ResponseEntity<List<Pet>> getPetByGender(@PathVariable("gender") Pet.Gender gender)
@@ -202,30 +202,63 @@ public class PetController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Pet> updatePet(@PathVariable("id") Integer id, @RequestBody Pet pet) {
-        Pet existingPet = petService.findPetById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pet not found under id: " + id));
-
-        existingPet.setId(pet.getId());
-        existingPet.setName(pet.getName());
-        existingPet.setAgeYear(pet.getAgeYear());
-        existingPet.setAgeMonths(pet.getAgeMonths());
-        existingPet.setGender(pet.getGender());
-        existingPet.setColor(pet.getColor());
-        existingPet.setIsLicensed(pet.getIsLicensed());
-        existingPet.setIsApproved(pet.getIsApproved());
-        existingPet.setType(pet.getType());
-        existingPet.setBreed(pet.getBreed());
-        existingPet.setIsNeutered(pet.getIsNeutered());
-        existingPet.setTraining(pet.getTraining());
-        existingPet.setTemperament(pet.getTemperament());
-        existingPet.setImagePath(pet.getImagePath());
+    public ResponseEntity<?> updatePet(
+            @PathVariable("id") Integer id,
+            @RequestParam("pawtnerName") String pawtnerName,
+            @RequestParam("pawtnerAgeYear") String pawtnerAgeYear,
+            @RequestParam("pawtnerAgeMonths") String pawtnerAgeMonths,
+            @RequestParam("pawtnerGender") String pawtnerGender,
+            @RequestParam("pawtnerColour") String pawtnerColour,
+            @RequestParam("pawtnerAVSLicensed") String pawtnerAVSLicensed,
+            @RequestParam("pawtnerHDBApproved") String pawtnerHDBApproved,
+            @RequestParam("pawtnerSpayNeuter") String pawtnerSpayNeuter,
+            @RequestParam("pawtnerTraining") String pawtnerTraining,
+            @RequestParam("pawtnerTemperament") String pawtnerTemperament,
+            @RequestParam("pawtnerType") String pawtnerType,
+            @RequestParam("pawtnerBreed") String pawtnerBreed,
+            @RequestParam("pawtnerImage") MultipartFile file) {
 
         try {
-            existingPet = petService.updatePet(existingPet);
-            return ResponseEntity.ok(existingPet);
-        } catch (HandlerMethodValidationException e) {
-            return ResponseEntity.badRequest().build();
+            // Convert string values to appropriate types and validate
+            int pawtnerAgeYearInt = Integer.parseInt(pawtnerAgeYear);
+            int pawtnerAgeMonthsInt = Integer.parseInt(pawtnerAgeMonths);
+            int pawtnerBreedInt = Integer.parseInt(pawtnerBreed);
+            boolean pawtnerAVSLicensedBool = pawtnerAVSLicensed.equalsIgnoreCase("yes");
+            boolean pawtnerHDBApprovedBool = pawtnerHDBApproved.equalsIgnoreCase("yes");
+            boolean pawtnerSpayNeuterBool = pawtnerSpayNeuter.equalsIgnoreCase("yes");
+            Pet.Gender pawtnerGenderEnum = Pet.Gender.valueOf(pawtnerGender);
+            Pet.Type pawtnerTypeEnum = Pet.Type.valueOf(pawtnerType);
+            Breed breed = breedRepository.findById(pawtnerBreedInt)
+                    .orElseThrow(() -> new ResourceNotFoundException("Breed not found with id: " + pawtnerBreedInt));
+            String imagePath = fileStorageService.storeFile(file);
+
+            // Fetch existing pet and update its properties
+            Pet existingPet = petService.findPetById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Pet not found under id: " + id));
+            existingPet.setName(pawtnerName);
+            existingPet.setAgeYear(pawtnerAgeYearInt);
+            existingPet.setAgeMonths(pawtnerAgeMonthsInt);
+            existingPet.setGender(pawtnerGenderEnum);
+            existingPet.setColor(pawtnerColour);
+            existingPet.setIsLicensed(pawtnerAVSLicensedBool);
+            existingPet.setIsApproved(pawtnerHDBApprovedBool);
+            existingPet.setIsNeutered(pawtnerSpayNeuterBool);
+            existingPet.setTraining(pawtnerTraining);
+            existingPet.setTemperament(pawtnerTemperament);
+            existingPet.setType(pawtnerTypeEnum);
+            existingPet.setBreed(breed);
+            existingPet.setImagePath(imagePath);
+
+            // Save the updated pet
+            Pet updatedPet = petService.updatePet(existingPet);
+            return new ResponseEntity<>(updatedPet, HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("Invalid format: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Internal Server Error: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
