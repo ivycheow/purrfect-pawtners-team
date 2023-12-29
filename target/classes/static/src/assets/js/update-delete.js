@@ -1,16 +1,20 @@
 var data = [];
 
+// Function to fetch pet ID by name
 function getPetIdByName(petName) {
   const apiUrl = `/pets/name?name=${encodeURIComponent(petName)}`;
   return fetch(apiUrl)
     .then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch petId");
+      if (!response.ok) throw new Error("Failed to fetch petId.");
       return response.json();
     })
     .then((data) => data.length > 0 ? data[0].id : null)
     .catch((error) => console.error("Error fetching petId: ", error));
 }
 
+/*Storing and Updating Data: The Controller class is responsible for handling the data, which includes products or pets. 
+This data is passed as an array to the constructor and is stored in the this.products property of the class. 
+This setup allows the Controller to manage and manipulate this data throughout its lifecycle.*/
 class Controller {
   constructor(currentId = 0, data = []) {
     this.products = data !== null && data;

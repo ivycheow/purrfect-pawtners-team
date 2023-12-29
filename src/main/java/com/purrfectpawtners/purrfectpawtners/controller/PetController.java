@@ -19,14 +19,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @RestController
 @RequestMapping("/pets")
 public class PetController {
-
-    private static final Logger logger = LoggerFactory.getLogger(PetController.class);
 
     @Autowired
     private PetService petService;
@@ -37,11 +32,13 @@ public class PetController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    // Get all pets with their breeds
     @GetMapping
     public List<Pet> getAllPetsWithBreeds() {
         return petService.getAllPetsWithBreeds();
     }
 
+    // Get all pets, optionally filtered by name
     @GetMapping("/all")
     public ResponseEntity<List<Pet>> getAllPets(@RequestParam(required = false) String name)
             throws EmptyPetListException {
@@ -58,6 +55,7 @@ public class PetController {
         return ResponseEntity.ok(result);
     }
 
+    // Get a pet by ID
     @GetMapping("/id/{id}")
     public ResponseEntity<Pet> getPetById(@PathVariable("id") Integer id) throws ResourceNotFoundException {
         Pet result = petService.findPetById(id)
@@ -65,6 +63,7 @@ public class PetController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    // Get pets by name
     @GetMapping("/name")
     public ResponseEntity<List<Pet>> getPetByName(@RequestParam(required = true) String name) {
         List<Pet> pets = petService.findByPetName(name);
@@ -74,6 +73,7 @@ public class PetController {
         return new ResponseEntity<>(pets, HttpStatus.OK);
     }
 
+    // Get pets by gender
     @GetMapping("/gender/{gender}")
     public ResponseEntity<List<Pet>> getPetByGender(@PathVariable("gender") Pet.Gender gender)
             throws EmptyPetListException {
@@ -84,8 +84,10 @@ public class PetController {
         return ResponseEntity.ok(allPetsByGender);
     }
 
+    // Get pets by type
     @GetMapping("/type")
-    public ResponseEntity<List<Pet>> getPetByType(@RequestParam(required = true) Pet.Type type) throws EmptyPetListException {
+    public ResponseEntity<List<Pet>> getPetByType(@RequestParam(required = true) Pet.Type type)
+            throws EmptyPetListException {
         List<Pet> allPetsByType = petService.findByPetType(type);
         if (allPetsByType.isEmpty()) {
             throw new EmptyPetListException("No " + type + " list available.");
@@ -93,6 +95,7 @@ public class PetController {
         return ResponseEntity.ok(allPetsByType);
     }
 
+    // Get all HDB-approved pets
     @GetMapping("/approved")
     public ResponseEntity<List<Pet>> getAllApprovedPets() throws EmptyPetListException {
         List<Pet> allApprovedPets = petService.findByHdbApprovedStatus(true);
@@ -102,6 +105,7 @@ public class PetController {
         return ResponseEntity.ok(allApprovedPets);
     }
 
+    // Get all non-HDB-approved pets
     @GetMapping("/non-approved")
     public ResponseEntity<List<Pet>> getAllNonApprovedPets() throws EmptyPetListException {
         List<Pet> allNonApprovedPets = petService.findByHdbApprovedStatus(false);
@@ -111,21 +115,22 @@ public class PetController {
         return ResponseEntity.ok(allNonApprovedPets);
     }
 
+    // Filter pets based on criteria
     @GetMapping("/filter")
     public ResponseEntity<List<Pet>> filterPets(
             @RequestParam(required = false) Pet.Type type,
             @RequestParam(required = false) Pet.Gender gender,
-            @RequestParam(required = false) Boolean isApproved
-            ) throws EmptyPetListException {
+            @RequestParam(required = false) Boolean isApproved) throws EmptyPetListException {
         List<Pet> filteredPets = petService.filterPets(type, gender, isApproved);
 
-        if(filteredPets.isEmpty()){
+        if (filteredPets.isEmpty()) {
             throw new EmptyPetListException("No pets matching the specified criteria.");
         }
 
         return ResponseEntity.ok(filteredPets);
     }
 
+    // Create a new pet
     @PostMapping("/")
     public ResponseEntity<?> createPet(
             @RequestParam("pawtnerName") String pawtnerName,
@@ -159,7 +164,6 @@ public class PetController {
             // Convert the string values to appropriate types
             int pawtnerAgeYearInt = Integer.parseInt(pawtnerAgeYear);
             int pawtnerAgeMonthsInt = Integer.parseInt(pawtnerAgeMonths);
-            logger.info("Received pawtnerBreed: {}", pawtnerBreed);
             int pawtnerBreedInt = Integer.parseInt(pawtnerBreed);
             boolean pawtnerAVSLicensedBool = pawtnerAVSLicensed.equalsIgnoreCase("yes");
             boolean pawtnerHDBApprovedBool = pawtnerHDBApproved.equalsIgnoreCase("yes");
@@ -204,6 +208,7 @@ public class PetController {
         }
     }
 
+    // Upload an image file
     @PostMapping("/uploadImage")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
@@ -215,6 +220,8 @@ public class PetController {
 
         return ResponseEntity.ok(fileDownloadUri);
     }
+
+    // Update an existing pet
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updatePet(
@@ -277,6 +284,7 @@ public class PetController {
         }
     }
 
+    // Delete a pet
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Optional<Pet>> deletePet(@Valid @PathVariable("id") Integer id) {
         Pet deletedPet = petService.findPetById(id)
