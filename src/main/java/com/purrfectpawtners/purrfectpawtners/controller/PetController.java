@@ -84,8 +84,8 @@ public class PetController {
         return ResponseEntity.ok(allPetsByGender);
     }
 
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<Pet>> getPetByType(@PathVariable("type") Pet.Type type) throws EmptyPetListException {
+    @GetMapping("/type")
+    public ResponseEntity<List<Pet>> getPetByType(@RequestParam(required = true) Pet.Type type) throws EmptyPetListException {
         List<Pet> allPetsByType = petService.findByPetType(type);
         if (allPetsByType.isEmpty()) {
             throw new EmptyPetListException("No " + type + " list available.");
@@ -95,7 +95,7 @@ public class PetController {
 
     @GetMapping("/approved")
     public ResponseEntity<List<Pet>> getAllApprovedPets() throws EmptyPetListException {
-        List<Pet> allApprovedPets = petService.findAllApprovedPets();
+        List<Pet> allApprovedPets = petService.findByHdbApprovedStatus(true);
         if (allApprovedPets.isEmpty()) {
             throw new EmptyPetListException("No HDB-approved pets available.");
         }
@@ -104,11 +104,26 @@ public class PetController {
 
     @GetMapping("/non-approved")
     public ResponseEntity<List<Pet>> getAllNonApprovedPets() throws EmptyPetListException {
-        List<Pet> allNonApprovedPets = petService.findAllNonApprovedPets();
+        List<Pet> allNonApprovedPets = petService.findByHdbApprovedStatus(false);
         if (allNonApprovedPets.isEmpty()) {
             throw new EmptyPetListException("No non HDB-approved pets available.");
         }
         return ResponseEntity.ok(allNonApprovedPets);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Pet>> filterPets(
+            @RequestParam(required = false) Pet.Type type,
+            @RequestParam(required = false) Pet.Gender gender,
+            @RequestParam(required = false) Boolean isApproved
+            ) throws EmptyPetListException {
+        List<Pet> filteredPets = petService.filterPets(type, gender, isApproved);
+
+        if(filteredPets.isEmpty()){
+            throw new EmptyPetListException("No pets matching the specified criteria.");
+        }
+
+        return ResponseEntity.ok(filteredPets);
     }
 
     @PostMapping("/")

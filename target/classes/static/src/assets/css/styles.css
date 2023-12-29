@@ -456,18 +456,15 @@ h2{
   background-color: #f3deba;
 }
 
-.show {
-  display: block !important; /* Override display to show items */
-}
-
 .clear-filter-button{
-  background-color: #f3deba;
+  background-color: #a9907e;
   height: 37.85px;
   margin-right: 30px;
+  color: white;
 }
 
 .clear-filter-button:hover{
-  background-color: #f3deba;
+  background-color: #a9907e;
 }
 
 .adoption-card{
@@ -542,14 +539,42 @@ h2{
   }
 
   .adoption-filter-mobile{
-    background-color: #f3deba;
+    background-color: #a9907e;
     border: none;
-    color: black;
+    color: white;
+    padding:8px;
+    margin-bottom: 10px;
   }
 
   .adoption-filter-mobile:hover{
-    background-color: #f3deba !important;
-    color: black !important;
+    background-color: #a9907e !important;
+    color: white !important;
     border: none !important;
+  }
+
+  .clear-filter-button{
+    margin-top: 10px;
+    background-color: #a9907e;
+    color: white;
+    grid-column: span 2;
+    margin-right: 0px;
+  }
+
+  .show{
+    display: grid !important;
+    grid-template-columns: 0.6fr 1fr;
+  }
+
+  .type-filter, .gender-filter, .hdbApproved-filter{
+    margin-bottom: 10px;
+    margin-right: 0px;
+  }
+
+  .album-container{
+    margin-top: -30px;
+  }
+
+  .album{
+    padding: 20px 0px !important;
   }
 }
