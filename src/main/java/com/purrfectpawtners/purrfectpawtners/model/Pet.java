@@ -32,7 +32,6 @@ public class Pet {
     private String name;
 
     @Column(name = "ageYear")
-    @NotNull(message = "Pet age(year) cannot be null.")
     @Max(value = 10, message = "Pet age(year) must not exceed 10.")
     private Integer ageYear;
 

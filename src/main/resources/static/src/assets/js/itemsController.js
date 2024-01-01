@@ -74,10 +74,17 @@ class Controller {
 
     // (B)
     for (let index = 0; index < data.length; index++) {
-      let ageInfo =
-        data[index].ageYear > 0 ? `${data[index].ageYear} years` : "";
-      ageInfo +=
-        data[index].ageMonths > 0 ? ` ${data[index].ageMonths} months` : "";
+      let ageInfo = "";
+      if (data[index].ageYear > 0) {
+        ageInfo += `${data[index].ageYear} ${data[index].ageYear === 1 ? 'year' : 'years'}`;
+      }
+
+      if (data[index].ageMonths > 0) {
+        if (ageInfo.length > 0) {
+          ageInfo += " "; 
+        }
+        ageInfo += `${data[index].ageMonths} ${data[index].ageMonths === 1 ? 'month' : 'months'}`;
+      }
 
       let listItem = document.createElement("div");
       listItem.className = `col pet-item`;
@@ -113,9 +120,7 @@ class Controller {
                                 </div>
                                 <div class="modal-body">
                                   <div class="modal-body-image text-center">
-                                    <img src="${
-                                      data[index].imagePath
-                                    }" class="img-thumbnail mx-auto d-block modal-list-img" alt="">
+                                    <img src="/public/uploads/${data[index].imagePath}" class="img-thumbnail mx-auto d-block modal-list-img" alt="">
                                   </div>
                                   <ul class="modal-list">
                                   <p class="modal-list-bio"><i>"${
