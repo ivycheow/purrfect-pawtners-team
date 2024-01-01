@@ -13,12 +13,15 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileStorageService {
 
+    // Declaration of file storage location
     private final Path fileStorageLocation;
 
+    // Constructor to initialize file storage location
     public FileStorageService() {
         this.fileStorageLocation = Paths.get("src/main/resources/static/public/uploads")
                 .toAbsolutePath().normalize();
 
+        // Creating directory for file storage
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
@@ -26,13 +29,14 @@ public class FileStorageService {
         }
     }
 
+    // Method to store a file
     public String storeFile(MultipartFile file) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
             // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
+            if (fileName.contains("..")) {
                 throw new RuntimeException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 

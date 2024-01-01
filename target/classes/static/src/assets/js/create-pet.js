@@ -215,3 +215,4 @@ function getSelectedRadioValue(radioButtons) {
   // Return a default value or null if none are selected
   return null;
 }
+
