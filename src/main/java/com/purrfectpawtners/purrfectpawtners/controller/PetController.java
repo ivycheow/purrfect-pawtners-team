@@ -238,7 +238,7 @@ public class PetController {
             @RequestParam("pawtnerTemperament") String pawtnerTemperament,
             @RequestParam("pawtnerType") String pawtnerType,
             @RequestParam("pawtnerBreed") String pawtnerBreed,
-            @RequestParam("pawtnerImage") MultipartFile file) {
+            @RequestParam(value = "pawtnerImage", required = false) MultipartFile file) {
 
         try {
             // Convert string values to appropriate types and validate
@@ -252,7 +252,7 @@ public class PetController {
             Pet.Type pawtnerTypeEnum = Pet.Type.valueOf(pawtnerType);
             Breed breed = breedRepository.findById(pawtnerBreedInt)
                     .orElseThrow(() -> new ResourceNotFoundException("Breed not found with id: " + pawtnerBreedInt));
-            String imagePath = fileStorageService.storeFile(file);
+
 
             // Fetch existing pet and update its properties
             Pet existingPet = petService.findPetById(id)
@@ -269,7 +269,10 @@ public class PetController {
             existingPet.setTemperament(pawtnerTemperament);
             existingPet.setType(pawtnerTypeEnum);
             existingPet.setBreed(breed);
-            existingPet.setImagePath(imagePath);
+            if(!file.isEmpty()){
+                String imagePath = fileStorageService.storeFile(file);
+                existingPet.setImagePath(imagePath);
+            }
 
             // Save the updated pet
             Pet updatedPet = petService.updatePet(existingPet);
