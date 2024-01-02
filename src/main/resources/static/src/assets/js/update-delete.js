@@ -162,28 +162,46 @@ function handleDeleteButtonClick(petName) {
         alert("Pet not found.");
         return;
       }
-      const confirmDelete = confirm("Are you sure you want to delete this pet?");
-      if (!confirmDelete) return;
-      const apiDeleteUrl = `/pets/delete/${petId}`;
-      fetch(apiDeleteUrl, { method: "DELETE" })
-        .then((response) => {
-          if (response.ok) {
-            alert("Pet deleted successfully");
-            window.location.reload();
-          } else {
-            alert("Failed to delete pet. Please try again.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error deleting pet:", error);
-          alert("An error occurred while deleting the pet. Please try again.");
-        });
+
+      const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+      deleteModal.show();
+
+      const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+      confirmDeleteBtn.addEventListener("click", () => {
+        deleteModal.hide();
+        const apiDeleteUrl = `/pets/delete/${petId}`;
+        fetch(apiDeleteUrl, { method: "DELETE" })
+          .then((response) => {
+            if (response.status === 200) {
+              window.location.reload();
+            } else {
+              alert("Failed to delete pet. Please try again.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting pet:", error);
+            alert("An error occurred while deleting the pet. Please try again.");
+          });
+      });
+
+      const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+      cancelDeleteBtn.addEventListener("click", () => {
+        deleteModal.hide();
+      });
     })
     .catch((error) => {
       console.error("Error: ", error);
       alert("An error occurred while fetching the pet. Please try again.");
     });
 }
+
+// Close the modal if the user clicks outside of it
+window.addEventListener("click", (event) => {
+  const deleteModal = document.getElementById("deleteModal");
+  if (event.target === deleteModal) {
+    deleteModal.style.display = "none";
+  }
+});
 
 function handleUpdateButtonClick() {
   const updateButtons = document.querySelectorAll(".update-button");

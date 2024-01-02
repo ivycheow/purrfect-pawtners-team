@@ -70,6 +70,7 @@ async function fetchBreeds(petType, selectedBreedId) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const breeds = await response.json();
+    breeds.sort((a, b) => a.name.localeCompare(b.name));
     populateBreedDropdown(breeds, selectedBreedId);
   } catch (error) {
     console.error("Error fetching breeds:", error);

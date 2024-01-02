@@ -481,6 +481,17 @@ h2{
   border: none;
 }
 
+.btn-primary{
+  --bs-btn-active-bg: #a9907e;
+  --bs-btn-active-border-color:none;
+}
+
+/* Delete Modal */
+.delete-modal-body{
+  margin-bottom: 0px !important;
+  padding-bottom: 0px !important;
+}
+
 /* Media Query */
 @media (max-width: 990px) {
   .landingpage-tagline {
