@@ -61,6 +61,19 @@ class Controller {
 
     for (let index = 0; index < data.length; index++) {
       const petName = data[index].name;
+
+      let ageInfo = "";
+      if (data[index].ageYear > 0) {
+        ageInfo += `${data[index].ageYear} ${data[index].ageYear === 1 ? 'year' : 'years'}`;
+      }
+
+      if (data[index].ageMonths > 0) {
+        if (ageInfo.length > 0) {
+          ageInfo += " "; 
+        }
+        ageInfo += `${data[index].ageMonths} ${data[index].ageMonths === 1 ? 'month' : 'months'}`;
+      }
+
       let listItem = document.createElement("div");
       listItem.className = `col pet-item`;
       listItem.innerHTML = `
@@ -72,7 +85,7 @@ class Controller {
               src="/public/uploads/${data[index].imagePath}"/>
               <div class="card-body album-card-body">
                 <h2>${data[index].name}</h2>
-                <p>${data[index].ageYear} years ${data[index].ageMonths} months // ${data[index].gender}</p>
+                <p>${ageInfo} old // ${data[index].gender}</p>
                 <div class="d-flex justify-content-between align-items-center">
                   <button type="button" class="btn btn-primary update-button" data-petid="${data[index].id}">
                     Update
