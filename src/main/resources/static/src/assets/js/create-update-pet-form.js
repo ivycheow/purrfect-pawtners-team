@@ -40,9 +40,14 @@ function populateFormFields(pet) {
   setBooleanField("pawtnerSpayNeuter", pet.isNeutered);
 
   const imagePreview = document.getElementById("imagePreview");
-  if (imagePreview && pet.imagePath) {
-    const imagePath = `/public/uploads/${encodeURIComponent(pet.imagePath)}`;
-    imagePreview.src = imagePath;
+  if (imagePreview) {
+    if (pet.imagePath) {
+      const imagePath = `/public/uploads/${encodeURIComponent(pet.imagePath)}`;
+      imagePreview.src = imagePath;
+    } else {
+      imagePreview.src =
+        "/images/create-pet-image-placeholder.png";
+    }
   }
 }
 
@@ -189,23 +194,32 @@ newProductForm.addEventListener("submit", async (event) => {
   // Create FormData from the form
   const formData = new FormData(event.target);
 
-  // Append the image file to formData
-  const fileInput = document.querySelector("#pawtnerImage").files[0];
-  formData.append("pawtnerImage", fileInput);
-
-  // Append the pawtnerBreed to formData
-  const selectedBreedId = document.getElementById("pawtnerBreed").value;
-  formData.append("pawtnerBreed", selectedBreedId);
-
-  const petId = document.getElementById("petId").value;
-  const method = petId ? "PUT" : "POST";
-  const url = petId ? `http://localhost:8080/pets/update/${petId}` : "http://localhost:8080/pets/";
-
-  console.log("FormData Contents:"); // Debugging line
-  for (let [key, value] of formData.entries()) {
-    console.log(key, value); // Debugging line
+  // Append the image file to formData if available
+  const fileInput = document.querySelector("#pawtnerImage");
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    formData.append("pawtnerImage", file);
   }
 
+  // Check if petId exists and append it to formData if it does
+  const petId = document.getElementById("petId").value;
+  if (petId) {
+    formData.append("petId", petId);
+  }
+
+  // Prepare URL and method for the request
+  const method = petId ? "PUT" : "POST";
+  const url = petId
+    ? `http://localhost:8080/pets/update/${petId}`
+    : "http://localhost:8080/pets/";
+
+  // Debugging: Log FormData contents
+  console.log("FormData Contents:");
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
+  // Perform the fetch request
   try {
     const response = await fetch(url, { method: method, body: formData });
     if (response.ok) {
@@ -225,6 +239,7 @@ function handleSuccessfulSubmission(petId, form) {
   displayToast();
 }
 
+
 function displayToast() {
   var toastEl = document.querySelector(".toast");
   var toast = new bootstrap.Toast(toastEl);
@@ -243,8 +258,8 @@ function setRequiredForImage() {
   // If petId exists, it's an update, so image is not required.
   // Otherwise, it's a new pet creation, so image is required.
   if (petId) {
-    imageInput.removeAttribute('required');
+    imageInput.removeAttribute("required");
   } else {
-    imageInput.setAttribute('required', '');
+    imageInput.setAttribute("required", "");
   }
 }

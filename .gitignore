@@ -5,4 +5,8 @@
 # os related
 .DS_Store
 
+# Documentation
 docs/
+
+# Build artifacts
+target/
