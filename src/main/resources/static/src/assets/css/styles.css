@@ -475,6 +475,12 @@ h2{
   box-shadow: none!important;
 }
 
+/* Update/Delete Page */
+.update-button, .update-button:hover, .update-button:active{
+  background-color: #a9907e;
+  border: none;
+}
+
 /* Media Query */
 @media (max-width: 990px) {
   .landingpage-tagline {
@@ -560,7 +566,7 @@ h2{
     margin-right: 0px;
   }
 
-  .show{
+  .adoption-show{
     display: grid !important;
     grid-template-columns: 0.6fr 1fr;
   }
