@@ -40,9 +40,14 @@ function populateFormFields(pet) {
   setBooleanField("pawtnerSpayNeuter", pet.isNeutered);
 
   const imagePreview = document.getElementById("imagePreview");
-  if (imagePreview && pet.imagePath) {
-    const imagePath = `/public/uploads/${encodeURIComponent(pet.imagePath)}`;
-    imagePreview.src = imagePath;
+  if (imagePreview) {
+    if (pet.imagePath) {
+      const imagePath = `/public/uploads/${encodeURIComponent(pet.imagePath)}`;
+      imagePreview.src = imagePath;
+    } else {
+      imagePreview.src =
+        "/images/create-pet-image-placeholder.png";
+    }
   }
 }
 
@@ -199,7 +204,9 @@ newProductForm.addEventListener("submit", async (event) => {
 
   const petId = document.getElementById("petId").value;
   const method = petId ? "PUT" : "POST";
-  const url = petId ? `http://localhost:8080/pets/update/${petId}` : "http://localhost:8080/pets/";
+  const url = petId
+    ? `http://localhost:8080/pets/update/${petId}`
+    : "http://localhost:8080/pets/";
 
   console.log("FormData Contents:"); // Debugging line
   for (let [key, value] of formData.entries()) {
@@ -243,8 +250,8 @@ function setRequiredForImage() {
   // If petId exists, it's an update, so image is not required.
   // Otherwise, it's a new pet creation, so image is required.
   if (petId) {
-    imageInput.removeAttribute('required');
+    imageInput.removeAttribute("required");
   } else {
-    imageInput.setAttribute('required', '');
+    imageInput.setAttribute("required", "");
   }
 }
