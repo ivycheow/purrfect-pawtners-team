@@ -208,7 +208,8 @@ function handleUpdateButtonClick() {
   updateButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const petId = this.getAttribute("data-petid");
-      window.location.href = `create-update-pet-form.html?id=${petId}`;
+      const url = `create-update-pet-form.html?id=${petId}`;
+      window.open(url, '_blank');
     });
   });
 }
