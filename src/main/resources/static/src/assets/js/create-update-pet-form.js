@@ -8,6 +8,14 @@ async function fetchPetDetails(petId) {
     const pet = await response.json();
     console.log("Fetched Pet Details:", pet);
     populateFormFields(pet);
+
+    const pageTitle = document.getElementById("pageTitle");
+    const formHeader = document.getElementById("formHeader");
+    if (petId) {
+      pageTitle.innerText = "Update Pet";
+      formHeader.innerText = `Update Details of ${pet.name}`;
+    } 
+
   } catch (error) {
     console.error("Error fetching pet details: ", error);
   }
@@ -214,6 +222,14 @@ newProductForm.addEventListener("submit", async (event) => {
     ? `http://localhost:8080/pets/update/${petId}`
     : "http://localhost:8080/pets/";
 
+  // customise message based on request method
+  const toastBody = document.querySelector(".create-pet-toast-header");
+  if(method === "PUT"){
+    toastBody.innerHTML = "Pet updated successfully!";
+  } else if(method === "POST"){
+    toastBody.innerHTML = "Pet added successfully!"
+  }
+
   // Debugging: Log FormData contents
   console.log("FormData Contents:");
   for (let [key, value] of formData.entries()) {
@@ -247,10 +263,10 @@ function displayToast() {
   toast.show();
 }
 
-var productAddedToast = document.querySelector(".toast");
-productAddedToast.addEventListener("hidden.bs.toast", function () {
-  window.open("adoption.html", "_self");
-});
+// var productAddedToast = document.querySelector(".toast");
+// productAddedToast.addEventListener("hidden.bs.toast", function () {
+//   window.open("adoption.html", "_self");
+// });
 
 function setRequiredForImage() {
   const petId = document.getElementById("petId").value;

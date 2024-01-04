@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Create Pet</title>
+        <title id="pageTitle">Create Pet</title>
 
         <!--Website Icon-->
         <link href="favicon-32x32.png" rel="icon" />
@@ -70,11 +70,11 @@
             <!-- Then put toasts within -->
             <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
                 <div class="toast-header">
-                    <strong class="me-auto">New Pet Added</strong>
+                    <strong class="me-auto create-pet-toast-header">Bootstrap</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
-                    Close [x] to visit the pet listings.
+                    Click on [x] to close.
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
         <div class="container mt-5">
             <div class="card">
                 <div class="card-header" style="background-color: #f3deba; color: #000;">
-                    <h4 class="mb-0">Add A Pet</h4>
+                    <h4 class="mb-0" id="formHeader">Add A Pet</h4>
                 </div>
                 <div class="card-body">
                     <form id="createPetForm" enctype="multipart/form-data">
@@ -116,14 +116,23 @@
                                 <!-- Age Year -->
                                 <div class="mb-4">
                                     <h5><label for="pawtnerAge" class="form-label">Age</label></h5>
-                                    <select class="form-control" id="pawtnerAgeYear" name="pawtnerAgeYear">
-                                        <option value="" disabled selected>Select year</option>
-                                        <!-- options will be populated by JavaScript -->
-                                    </select>
-                                    <select class="form-control" id="pawtnerAgeMonths" name="pawtnerAgeMonths" required>
-                                        <option value="" disabled selected>Select months</option>
-                                        <!-- options will be populated by JavaScript -->
-                                    </select>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="pawtnerAgeYear">Year(s)</label>
+                                        </div>
+                                        <select class="custom-select" id="pawtnerAgeYear" name="pawtnerAgeYear">
+                                            <option value="" disabled selected>Choose...</option>
+                                            <!-- options will be populated by JavaScript -->
+                                        </select>
+
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text pawtner-age-months" for="pawtnerAgeMonths">Month(s)</label>
+                                        </div>
+                                        <select class="custom-select" id="pawtnerAgeMonths" name="pawtnerAgeMonths" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <!-- options will be populated by JavaScript -->
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <!-- Gender -->
@@ -160,7 +169,7 @@
 
                                 <!-- HDB Approved Breed -->
                                 <h5 class="mb-2">HDB Approved Breed</h5>
-                                <div class="mb-2">
+                                <div class="mb-4">
                                     <div class="form-check form-check-inline">
                                         <input type="radio" id="pawtnerHDBApproved1" name="pawtnerHDBApproved" class="form-check-input" value="Yes" />
                                         <label class="form-check-label" for="pawtnerHDBApproved1">Yes</label>
@@ -171,8 +180,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Type -->
-                                <div class="input-group mb-3">
+                                <!-- Type, Breed -->
+                                <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="pawtnerType">Type</label>
                                     </div>
@@ -181,16 +190,18 @@
                                         <option value="Cats">Cats</option>
                                         <option value="Dogs">Dogs</option>
                                     </select>
-                                </div>
 
-                                <!-- Breed -->
-                                <div class="input-group mb-4">
                                     <div class="input-group-prepend">
-                                        <label class="input-group-text" for="pawtnerBreed">Breed</label>
+                                        <label class="input-group-text pawtner-breed" for="pawtnerBreed">Breed</label>
                                     </div>
                                     <select class="custom-select" id="pawtnerBreed" name="pawtnerBreed">
                                         <option selected>Choose...</option>
                                     </select>
+                                </div>
+
+                                <!-- Breed -->
+                                <div class="input-group mb-4">
+                                    
                                 </div>
 
                                 <!-- Spaying / Neutering -->
