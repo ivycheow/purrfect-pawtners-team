@@ -47,7 +47,6 @@ class Controller {
     try{
       let response = await fetch("/pets/all");
       let data = await response.json();
-      console.log(data);
       this.products = data;
       this.displayCart(data);
       this.setupFilterListeneers();
@@ -190,7 +189,6 @@ class Controller {
     // (A)
     if (storageItems) {
       const products = JSON.parse(storageItems);
-      console.log(`Testing products length ${products.length}`);
       const product = {
         id: products.length + 1,
         name: name,

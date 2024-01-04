@@ -147,19 +147,6 @@ public class PetController {
             @RequestParam("pawtnerBreed") String pawtnerBreed,
             @RequestParam("pawtnerImage") MultipartFile file) {
 
-        System.out.println("pawtnerName: " + pawtnerName);
-        System.out.println("pawtnerAgeYear: " + pawtnerAgeYear);
-        System.out.println("pawtnerAgeMonths: " + pawtnerAgeMonths);
-        System.out.println("pawtnerGender: " + pawtnerGender);
-        System.out.println("pawtnerColour: " + pawtnerColour);
-        System.out.println("pawtnerAVSLicensed: " + pawtnerAVSLicensed);
-        System.out.println("pawtnerHDBApproved: " + pawtnerHDBApproved);
-        System.out.println("pawtnerSpayNeuter: " + pawtnerSpayNeuter);
-        System.out.println("pawtnerTraining: " + pawtnerTraining);
-        System.out.println("pawtnerTemperament: " + pawtnerTemperament);
-        System.out.println("pawtnerType: " + pawtnerType);
-        System.out.println("pawtnerBreed: " + pawtnerBreed);
-        System.out.println("pawtnerImage: " + file.getOriginalFilename());
         try {
             // Convert the string values to appropriate types
             int pawtnerAgeYearInt = Integer.parseInt(pawtnerAgeYear);

@@ -6,7 +6,6 @@ async function fetchPetDetails(petId) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const pet = await response.json();
-    console.log("Fetched Pet Details:", pet);
     populateFormFields(pet);
 
     const pageTitle = document.getElementById("pageTitle");
@@ -36,7 +35,6 @@ function populateFormFields(pet) {
     ).checked = true;
   }
 
-  console.log("Breed Details:", pet.breed);
   const pawtnerTypeDropdown = document.getElementById("pawtnerType");
   pawtnerTypeDropdown.value = pet.type || "";
   if (pet.type && pet.breed) {
@@ -230,12 +228,6 @@ newProductForm.addEventListener("submit", async (event) => {
     toastBody.innerHTML = "Pet added successfully!"
   }
 
-  // Debugging: Log FormData contents
-  console.log("FormData Contents:");
-  for (let [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
-  }
-
   // Perform the fetch request
   try {
     const response = await fetch(url, { method: method, body: formData });
@@ -250,7 +242,6 @@ newProductForm.addEventListener("submit", async (event) => {
 });
 
 function handleSuccessfulSubmission(petId, form) {
-  console.log(petId ? "Pet updated successfully" : "Pet added successfully");
   form.reset();
   resetPreviewImage(document.getElementById("imagePreview"));
   displayToast();
