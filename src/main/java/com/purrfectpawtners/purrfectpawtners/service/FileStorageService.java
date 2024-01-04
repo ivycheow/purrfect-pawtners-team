@@ -10,19 +10,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+// handles file storage operations within a Spring application
 @Service
 public class FileStorageService {
 
     // Declaration of file storage location
     private final Path fileStorageLocation;
 
-    // Constructor to initialize file storage location
+    // Constructor to initialize file storage location ensures the availability of the designed storage directory before any file storage operations take place 
     public FileStorageService() {
+        // creates a Path object representing the intended directory to store files 
         this.fileStorageLocation = Paths.get("src/main/resources/static/public/uploads")
+                // converts to an absolute path and normalises the path, removing redundant elements like // or ".."
                 .toAbsolutePath().normalize();
 
-        // Creating directory for file storage
+        // Creating directory for file storage if needed
         try {
+            // create the directory if it doesnt exist
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
             throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
@@ -30,10 +34,12 @@ public class FileStorageService {
     }
 
     // Method to store a file
+    // MultipartFile as parameter - an uploaded file 
     public String storeFile(MultipartFile file) {
-        // Normalize file name
+        // cleans up original file name to prevent potential path traversal attacks 
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
+        // validates file name
         try {
             // Check if the file's name contains invalid characters
             if (fileName.contains("..")) {
