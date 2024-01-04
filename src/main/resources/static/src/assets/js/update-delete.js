@@ -8,7 +8,7 @@ function getPetIdByName(petName) {
       if (!response.ok) throw new Error("Failed to fetch petId.");
       return response.json();
     })
-    .then((data) => data.length > 0 ? data[0].id : null)
+    .then((data) => (data.length > 0 ? data[0].id : null))
     .catch((error) => console.error("Error fetching petId: ", error));
 }
 
@@ -64,14 +64,18 @@ class Controller {
 
       let ageInfo = "";
       if (data[index].ageYear > 0) {
-        ageInfo += `${data[index].ageYear} ${data[index].ageYear === 1 ? 'year' : 'years'}`;
+        ageInfo += `${data[index].ageYear} ${
+          data[index].ageYear === 1 ? "year" : "years"
+        }`;
       }
 
       if (data[index].ageMonths > 0) {
         if (ageInfo.length > 0) {
-          ageInfo += " "; 
+          ageInfo += " ";
         }
-        ageInfo += `${data[index].ageMonths} ${data[index].ageMonths === 1 ? 'month' : 'months'}`;
+        ageInfo += `${data[index].ageMonths} ${
+          data[index].ageMonths === 1 ? "month" : "months"
+        }`;
       }
 
       let listItem = document.createElement("div");
@@ -101,7 +105,21 @@ class Controller {
     handleUpdateButtonClick();
   }
 
-  addProduct(name, ageYear, ageMonths, type, breed, imagePath, gender, color, licensed, hdbApproved, spaying, training, temperament) {
+  addProduct(
+    name,
+    ageYear,
+    ageMonths,
+    type,
+    breed,
+    imagePath,
+    gender,
+    color,
+    licensed,
+    hdbApproved,
+    spaying,
+    training,
+    temperament
+  ) {
     const storageItems = localStorage.getItem("productList");
     if (storageItems) {
       const products = JSON.parse(storageItems);
@@ -163,7 +181,9 @@ function handleDeleteButtonClick(petName) {
         return;
       }
 
-      const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+      const deleteModal = new bootstrap.Modal(
+        document.getElementById("deleteModal")
+      );
       deleteModal.show();
 
       const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
@@ -180,7 +200,9 @@ function handleDeleteButtonClick(petName) {
           })
           .catch((error) => {
             console.error("Error deleting pet:", error);
-            alert("An error occurred while deleting the pet. Please try again.");
+            alert(
+              "An error occurred while deleting the pet. Please try again."
+            );
           });
       });
 
@@ -209,7 +231,7 @@ function handleUpdateButtonClick() {
     button.addEventListener("click", function () {
       const petId = this.getAttribute("data-petid");
       const url = `create-update-pet-form.html?id=${petId}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     });
   });
 }

@@ -13,8 +13,7 @@ async function fetchPetDetails(petId) {
     if (petId) {
       pageTitle.innerText = "Update Pet";
       formHeader.innerText = `Update Details of ${pet.name}`;
-    } 
-
+    }
   } catch (error) {
     console.error("Error fetching pet details: ", error);
   }
@@ -51,8 +50,7 @@ function populateFormFields(pet) {
       const imagePath = `/public/uploads/${encodeURIComponent(pet.imagePath)}`;
       imagePreview.src = imagePath;
     } else {
-      imagePreview.src =
-        "/images/create-pet-image-placeholder.png";
+      imagePreview.src = "/images/create-pet-image-placeholder.png";
     }
   }
 }
@@ -222,10 +220,10 @@ newProductForm.addEventListener("submit", async (event) => {
 
   // customise message based on request method
   const toastBody = document.querySelector(".create-pet-toast-header");
-  if(method === "PUT"){
+  if (method === "PUT") {
     toastBody.innerHTML = "Pet updated successfully!";
-  } else if(method === "POST"){
-    toastBody.innerHTML = "Pet added successfully!"
+  } else if (method === "POST") {
+    toastBody.innerHTML = "Pet added successfully!";
   }
 
   // Perform the fetch request
@@ -246,7 +244,6 @@ function handleSuccessfulSubmission(petId, form) {
   resetPreviewImage(document.getElementById("imagePreview"));
   displayToast();
 }
-
 
 function displayToast() {
   var toastEl = document.querySelector(".toast");

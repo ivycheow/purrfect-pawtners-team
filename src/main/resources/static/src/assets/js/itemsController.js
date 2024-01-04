@@ -43,14 +43,14 @@ class Controller {
     }
   }
 
-  async fetchAndDisplayAllPets(){
-    try{
+  async fetchAndDisplayAllPets() {
+    try {
       let response = await fetch("/pets/all");
       let data = await response.json();
       this.products = data;
       this.displayCart(data);
       this.setupFilterListeneers();
-    } catch(error){
+    } catch (error) {
       console.error("Error fetching data from API: ", error);
     }
   }
@@ -75,14 +75,18 @@ class Controller {
     for (let index = 0; index < data.length; index++) {
       let ageInfo = "";
       if (data[index].ageYear > 0) {
-        ageInfo += `${data[index].ageYear} ${data[index].ageYear === 1 ? 'year' : 'years'}`;
+        ageInfo += `${data[index].ageYear} ${
+          data[index].ageYear === 1 ? "year" : "years"
+        }`;
       }
 
       if (data[index].ageMonths > 0) {
         if (ageInfo.length > 0) {
-          ageInfo += " "; 
+          ageInfo += " ";
         }
-        ageInfo += `${data[index].ageMonths} ${data[index].ageMonths === 1 ? 'month' : 'months'}`;
+        ageInfo += `${data[index].ageMonths} ${
+          data[index].ageMonths === 1 ? "month" : "months"
+        }`;
       }
 
       let listItem = document.createElement("div");
@@ -119,7 +123,9 @@ class Controller {
                                 </div>
                                 <div class="modal-body">
                                   <div class="modal-body-image text-center">
-                                    <img src="/public/uploads/${data[index].imagePath}" class="img-thumbnail mx-auto d-block modal-list-img" alt="">
+                                    <img src="/public/uploads/${
+                                      data[index].imagePath
+                                    }" class="img-thumbnail mx-auto d-block modal-list-img" alt="">
                                   </div>
                                   <ul class="modal-list">
                                   <p class="modal-list-bio"><i>"${
@@ -236,7 +242,9 @@ class Controller {
   setupFilterListeneers() {
     const typeFilter = document.getElementById("pawtnerTypeFilter");
     const genderFilter = document.getElementById("pawtnerGenderFilter");
-    const hdbApprovedFilter = document.getElementById("pawtnerHDBApprovedFilter");
+    const hdbApprovedFilter = document.getElementById(
+      "pawtnerHDBApprovedFilter"
+    );
     const clearFilterButton = document.querySelector(".clear-filter-button");
 
     clearFilterButton.addEventListener("click", function () {
@@ -250,28 +258,40 @@ class Controller {
       const filters = [
         { name: "type", value: typeFilter.value },
         { name: "gender", value: genderFilter.value },
-        { name: "isApproved", value: hdbApprovedFilter.value === "Yes" ? true : hdbApprovedFilter.value === "No" ? false : null },
+        {
+          name: "isApproved",
+          value:
+            hdbApprovedFilter.value === "Yes"
+              ? true
+              : hdbApprovedFilter.value === "No"
+              ? false
+              : null,
+        },
       ];
 
-      const validFilters = filters.filter((filter) => filter.value !== "All" && filter.value !== null);
+      const validFilters = filters.filter(
+        (filter) => filter.value !== "All" && filter.value !== null
+      );
 
-      const apiUrl = "/pets/filter?" + validFilters
-        .map((filter) => `${filter.name}=${filter.value}`)
-        .join("&");
-  
+      const apiUrl =
+        "/pets/filter?" +
+        validFilters
+          .map((filter) => `${filter.name}=${filter.value}`)
+          .join("&");
+
       fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        this.displayCart(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-    }
+        .then((response) => response.json())
+        .then((data) => {
+          this.displayCart(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    };
 
-      typeFilter.addEventListener("change", callApi);
-      genderFilter.addEventListener("change", callApi);
-      hdbApprovedFilter.addEventListener("change", callApi);
+    typeFilter.addEventListener("change", callApi);
+    genderFilter.addEventListener("change", callApi);
+    hdbApprovedFilter.addEventListener("change", callApi);
   }
 }
 
